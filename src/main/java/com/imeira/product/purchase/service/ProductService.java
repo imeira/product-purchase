@@ -26,26 +26,26 @@ public class ProductService {
 
 	public List<Installment> simulatePurchase(Simulation installments) {
 		LOG.info("XXXXXXX getInstallments XXXXXXX");
-		if(installments.getProduct().getValue().doubleValue() < installments.getPaymentRules().getInitValue().doubleValue()) {
+		if(installments.getProduct().getValue().doubleValue() < installments.getPaymentConditions().getInitValue().doubleValue()) {
 			LOG.error("Valor de entrada é maior que o valor do produto");
 			throw new IllegalArgumentException("Valor de entrada é maior que o valor do produto");
 		}
-		Double diff = installments.getProduct().getValue().doubleValue() - installments.getPaymentRules().getInitValue().doubleValue();
+		Double diff = installments.getProduct().getValue().doubleValue() - installments.getPaymentConditions().getInitValue().doubleValue();
 
 		List<Installment> list = new ArrayList<>();
-		if (installments.getPaymentRules().getNumberInstallments() < 7) {
+		if (installments.getPaymentConditions().getNumberInstallments() < 7) {
 			LOG.info("XXXXXXX getInstallments IF XXXXXXX");
-			for (int i = 0; i < installments.getPaymentRules().getNumberInstallments(); i++) {
+			for (int i = 0; i < installments.getPaymentConditions().getNumberInstallments(); i++) {
 				list.add(Installment.builder().installment(i+1)
-						.value(BigDecimal.valueOf(diff).divide(BigDecimal.valueOf(installments.getPaymentRules().getNumberInstallments()), 2, RoundingMode.HALF_DOWN))
+						.value(BigDecimal.valueOf(diff).divide(BigDecimal.valueOf(installments.getPaymentConditions().getNumberInstallments()), 2, RoundingMode.HALF_DOWN))
 						.interestRate(BigDecimal.ZERO).build());
 			}
 		} else {
 			LOG.info("XXXXXXX getInstallments ELSE XXXXXXX");
-			Double total = calculateInterest(getSelicRateLast30Days().doubleValue(), installments.getPaymentRules().getNumberInstallments(), diff);
-			for (int i = 0; i < installments.getPaymentRules().getNumberInstallments(); i++) {
+			Double total = calculateInterest(getSelicRateLast30Days().doubleValue(), installments.getPaymentConditions().getNumberInstallments(), diff);
+			for (int i = 0; i < installments.getPaymentConditions().getNumberInstallments(); i++) {
 				list.add(Installment.builder().installment(i+1)
-						.value(BigDecimal.valueOf(total).divide(BigDecimal.valueOf(installments.getPaymentRules().getNumberInstallments()), 2, RoundingMode.HALF_DOWN))
+						.value(BigDecimal.valueOf(total).divide(BigDecimal.valueOf(installments.getPaymentConditions().getNumberInstallments()), 2, RoundingMode.HALF_DOWN))
 						.interestRate(getSelicRateLast30Days()).build());
 			}
 		}

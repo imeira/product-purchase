@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 public class Simulation {
 
-	private PaymentConditions paymentRules;
+	private PaymentConditions paymentConditions;
 	private Product product;
 
 }
